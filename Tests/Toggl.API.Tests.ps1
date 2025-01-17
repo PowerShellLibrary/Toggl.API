@@ -3,18 +3,22 @@ Import-Module -Name Pester -Force
 Import-Module .\Toggl.API\Toggl.API.psm1 -Force
 
 Describe 'Toggl.API.Tests' {
-    Context "C1" {
+    Context "Authentication Header Tests" {
 
-        It "given A=<A>, it returns: '<Expected>'" -TestCases @(
-            @{ A = "true"; Expected = $true }
-            @{ A = "false"; Expected = $false }
-        ) {
-            param ($A, $Expected)
-            [bool]::Parse($A)  | Should -BeExactly $Expected
+        It "should generate correct authorization header" {
+            $expected = 'Basic MTIzYTEyYWJjZDFhYjEyMzRkODZhNDcxZTkxNjI5NWM6YXBpX3Rva2Vu'
+
+            $header = Get-TogglAuthHeader -ApiKey 123a12abcd1ab1234d86a471e916295c
+            $header.ContainsKey('Authorization') | Should -Be $true
+            $header.Authorization | Should Not BeNullOrEmpty
+            $header.Authorization | Should -BeExactly $expected
         }
 
-        It "shouldn't accept" {
-            $true | Should -BeTrue
+        It "given apiKey=<apiKey>, it throws exception" -TestCases @(
+            @{ apiKey = "" }
+            @{ apiKey = $null }
+        ) {
+            { Get-TogglAuthHeader -ApiKey '' } | Should Throw "Cannot bind argument to parameter 'ApiKey' because it is an empty string."
         }
     }
 }
