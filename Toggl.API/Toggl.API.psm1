@@ -1,3 +1,6 @@
+$Global:TogglBaseUrl = "https://api.track.toggl.com/api/v9"
+$Global:TogglReportsBaseUrl = "https://api.track.toggl.com/reports/api/v3"
+
 #Get public and private function definition files.
 $Public = @( Get-ChildItem -Path $PSScriptRoot\Public -Recurse -Filter *.ps1 -ErrorAction SilentlyContinue )
 $Private = @( Get-ChildItem -Path $PSScriptRoot\Private -Recurse -Filter *.ps1 -ErrorAction SilentlyContinue )
