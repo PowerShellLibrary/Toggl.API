@@ -1,4 +1,3 @@
-Clear-Host
 Import-Module -Name Pester -Force
 Import-Module .\Toggl.API\Toggl.API.psm1 -Force
 
