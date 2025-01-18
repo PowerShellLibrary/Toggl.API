@@ -187,7 +187,6 @@ function Search-TogglTimeEntries {
     if ($PSBoundParameters.ContainsKey('UserIds')) { $body.user_ids = $UserIds }
 
     $jsonBody = $body | ConvertTo-Json -Compress -Depth 10
-    Write-Host $jsonBody
 
     $headers = Get-TogglAuthHeader -ApiToken $ApiToken
     $headers.Add("Content-Type", "application/json")
