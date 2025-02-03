@@ -28,3 +28,14 @@ PowerShell module to interact with the [**Toggl API**](https://engineering.toggl
 
 ### Authentication
 - **Get-TogglAuthHeader**: Generates the authentication header from the API token.
+
+## Development
+
+### Tests
+To run tests you need to have your own API key and workspace. Once you have it create `.env` using `.env.example` as an example.
+
+To load environment variables to current session use `.\scripts\load-env.ps1`
+
+To cleanup workspace use `.\scripts\cleanup-workspace.ps1`
+
+Tests load settins either from environment variables or from `.\Tests\config.json`
