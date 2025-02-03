@@ -5,12 +5,7 @@ Import-Module .\Toggl.API\Toggl.API.psm1 -Force
 
 Describe 'TimeEntries Integration Tests' {
     BeforeAll {
-        $configPath = Join-Path -Path $PSScriptRoot -ChildPath "..\config.json"
-        $config = Get-Content -Path $configPath | ConvertFrom-Json
-
-        $apiToken = $config.apiToken
-        $workspaceId = $config.workspaceId
-
+        . "$PSScriptRoot\..\Initialize-Parameters.ps1"
         $timeEntryId = $null
     }
 
@@ -34,7 +29,7 @@ Describe 'TimeEntries Integration Tests' {
     }
 
     Context "Get-TogglTimeEntryById" {
-        It "should retrieve the created time entry by ID" -Skip:($Script:timeEntryId -eq $null) {
+        It "should retrieve the created time entry by ID" {
             $response = Get-TogglTimeEntryById `
                 -ApiToken $apiToken `
                 -TimeEntryId $Script:timeEntryId
@@ -55,7 +50,7 @@ Describe 'TimeEntries Integration Tests' {
     }
 
     Context "Update-TogglTimeEntry" {
-        It "should update the time entry" -Skip:($Script:timeEntryId -eq $null) {
+        It "should update the time entry" {
             $newDescription = "Updated Test Time Entry"
 
             $response = Update-TogglTimeEntry `
@@ -64,7 +59,7 @@ Describe 'TimeEntries Integration Tests' {
                 -TimeEntryId $Script:timeEntryId `
                 -Description $newDescription
 
-            $response | Should Not BeNullOrEmpty
+            $response | Should -Not -BeNullOrEmpty
             $response.description | Should -BeExactly $newDescription
         }
     }
@@ -85,7 +80,7 @@ Describe 'TimeEntries Integration Tests' {
     }
 
     Context "Remove-TogglTimeEntry" {
-        It "should delete the time entry" -Skip:($Script:timeEntryId -eq $null) {
+        It "should delete the time entry" {
             Remove-TogglTimeEntry `
                 -ApiToken $apiToken `
                 -WorkspaceId $workspaceId `

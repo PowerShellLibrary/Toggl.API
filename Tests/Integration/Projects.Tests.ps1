@@ -5,12 +5,7 @@ Import-Module .\Toggl.API\Toggl.API.psm1 -Force
 
 Describe 'Toggl Projects Integration Tests' {
     BeforeAll {
-        $configPath = Join-Path -Path $PSScriptRoot -ChildPath "..\config.json"
-        $config = Get-Content -Path $configPath | ConvertFrom-Json
-
-        $apiToken = $config.apiToken
-        $workspaceId = $config.workspaceId
-
+        . "$PSScriptRoot\..\Initialize-Parameters.ps1"
         $projectName = "TestProjectToRemove"
         $projectId = $null
     }
@@ -45,7 +40,7 @@ Describe 'Toggl Projects Integration Tests' {
     }
 
     Context "Remove-TogglProject" {
-        It "should delete the project from the workspace" -Skip:($Script:projectId -eq $null) {
+        It "should delete the project from the workspace" {
             Remove-TogglProject `
                 -ApiToken $apiToken `
                 -WorkspaceId $workspaceId `
@@ -61,7 +56,7 @@ Describe 'Toggl Projects Integration Tests' {
                 -SortField "name" `
                 -SortOrder "asc" `
                 -OnlyTemplates $false
-            $projects | Where-Object { $_.id -eq $Script:projectId } | Should BeNullOrEmpty
+            $projects | Where-Object { $_.id -eq $Script:projectId } | Should -BeNullOrEmpty
         }
     }
 }

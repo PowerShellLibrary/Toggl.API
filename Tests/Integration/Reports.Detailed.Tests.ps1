@@ -5,11 +5,7 @@ Import-Module .\Toggl.API\Toggl.API.psm1 -Force
 
 Describe 'Reports.Detailed Integration Tests' {
     BeforeAll {
-        $configPath = Join-Path -Path $PSScriptRoot -ChildPath "..\config.json"
-        $config = Get-Content -Path $configPath | ConvertFrom-Json
-
-        $apiToken = $config.apiToken
-        $workspaceId = $config.workspaceId
+        . "$PSScriptRoot\..\Initialize-Parameters.ps1"
 
         $startDate = "2023-01-01"
         $endDate = "2023-12-31"
@@ -60,6 +56,13 @@ Describe 'Reports.Detailed Integration Tests' {
                 -ApiToken $apiToken `
                 -WorkspaceId $workspaceId `
                 -TimeEntryId $timeEntryId
+        }
+
+        foreach ($tagId in $tagIds) {
+            Remove-TogglTag `
+                -ApiToken $apiToken `
+                -WorkspaceId $workspaceId `
+                -TagId $tagId
         }
     }
 
