@@ -1,14 +1,18 @@
-Import-Module -Name Pester -Force
+if (-not (Get-Module -Name Pester)) {
+    Import-Module -Name Pester -Force
+}
 Import-Module .\Toggl.API\Toggl.API.psm1 -Force
 
-$configPath = Join-Path -Path $PSScriptRoot -ChildPath "..\config.json"
-$config = Get-Content -Path $configPath | ConvertFrom-Json
-
-$apiToken = $config.apiToken
-$workspaceId = $config.workspaceId
-
 Describe 'TimeEntries Integration Tests' {
-    $timeEntryId = $null
+    BeforeAll {
+        $configPath = Join-Path -Path $PSScriptRoot -ChildPath "..\config.json"
+        $config = Get-Content -Path $configPath | ConvertFrom-Json
+
+        $apiToken = $config.apiToken
+        $workspaceId = $config.workspaceId
+
+        $timeEntryId = $null
+    }
 
     Context "New-TogglTimeEntry" {
         It "should create a new time entry" {
@@ -23,7 +27,7 @@ Describe 'TimeEntries Integration Tests' {
                 -Start $start `
                 -Description $description
 
-            $response | Should Not BeNullOrEmpty
+            $response | Should -Not -BeNullOrEmpty
             $response.description | Should -BeExactly $description
             $Script:timeEntryId = $response.id
         }
@@ -35,7 +39,7 @@ Describe 'TimeEntries Integration Tests' {
                 -ApiToken $apiToken `
                 -TimeEntryId $Script:timeEntryId
 
-            $response | Should Not BeNullOrEmpty
+            $response | Should -Not -BeNullOrEmpty
             $response.id | Should -BeExactly $Script:timeEntryId
         }
 
@@ -46,7 +50,7 @@ Describe 'TimeEntries Integration Tests' {
                 -ApiToken $apiToken `
                 -TimeEntryId $nonExistingTimeEntryId
 
-            $response | Should BeNullOrEmpty
+            $response | Should -BeNullOrEmpty
         }
     }
 
@@ -71,11 +75,11 @@ Describe 'TimeEntries Integration Tests' {
                 -ApiToken $apiToken `
                 -Since ([int][double]::Parse((Get-Date).AddDays(-7).ToUniversalTime().Subtract([datetime]'1970-01-01').TotalSeconds))
 
-            $response | Should Not BeNullOrEmpty
+            $response | Should -Not -BeNullOrEmpty
             $response.GetType().Name | Should -Be "Object[]"
 
             $filteredResponse = $response | Where-Object { $_.server_deleted_at -ne $null }
-            $filteredResponse | Should Not BeNullOrEmpty
+            $filteredResponse | Should -Not -BeNullOrEmpty
             $filteredResponse.Count | Should -BeGreaterThan 0
         }
     }
@@ -91,7 +95,7 @@ Describe 'TimeEntries Integration Tests' {
                 -ApiToken $apiToken `
                 -TimeEntryId $Script:timeEntryId
 
-            $response | Should BeNullOrEmpty
+            $response | Should -BeNullOrEmpty
         }
     }
 }

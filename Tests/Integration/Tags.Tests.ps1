@@ -1,14 +1,18 @@
-Import-Module -Name Pester -Force
+if (-not (Get-Module -Name Pester)) {
+    Import-Module -Name Pester -Force
+}
 Import-Module .\Toggl.API\Toggl.API.psm1 -Force
 
-$configPath = Join-Path -Path $PSScriptRoot -ChildPath "..\config.json"
-$config = Get-Content -Path $configPath | ConvertFrom-Json
-
-$apiToken = $config.apiToken
-$workspaceId = $config.workspaceId
-
 Describe 'Toggl Tag Integration Tests' {
-    $tagName = "TestTagToRemove"
+    BeforeAll {
+        $configPath = Join-Path -Path $PSScriptRoot -ChildPath "..\config.json"
+        $config = Get-Content -Path $configPath | ConvertFrom-Json
+
+        $apiToken = $config.apiToken
+        $workspaceId = $config.workspaceId
+
+        $tagName = "TestTagToRemove"
+    }
 
     Context "New-TogglTag" {
         It "should create a new tag in the workspace" {

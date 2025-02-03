@@ -1,4 +1,6 @@
-Import-Module -Name Pester -Force
+if (-not (Get-Module -Name Pester)) {
+    Import-Module -Name Pester -Force
+}
 Import-Module .\Toggl.API\Toggl.API.psm1 -Force
 
 Describe 'Toggl.API.Tests' {
@@ -9,7 +11,7 @@ Describe 'Toggl.API.Tests' {
 
             $header = Get-TogglAuthHeader -ApiToken 123a12abcd1ab1234d86a471e916295c
             $header.ContainsKey('Authorization') | Should -Be $true
-            $header.Authorization | Should Not BeNullOrEmpty
+            $header.Authorization | Should -Not -BeNullOrEmpty
             $header.Authorization | Should -BeExactly $expected
         }
 
@@ -17,7 +19,7 @@ Describe 'Toggl.API.Tests' {
             @{ apiToken = "" }
             @{ apiToken = $null }
         ) {
-            { Get-TogglAuthHeader -ApiToken '' } | Should Throw "Cannot bind argument to parameter 'ApiToken' because it is an empty string."
+            { Get-TogglAuthHeader -ApiToken '' } | Should -Throw "Cannot bind argument to parameter 'ApiToken' because it is an empty string."
         }
     }
 }
